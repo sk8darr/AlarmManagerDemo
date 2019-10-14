@@ -1,0 +1,81 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:2293735442418614860",
+      "lastPropertyId": "8:4723908619486789543",
+      "name": "Alarm",
+      "properties": [
+        {
+          "id": "1:133588021888443566",
+          "name": "id"
+        },
+        {
+          "id": "2:222611106337707781",
+          "name": "title"
+        },
+        {
+          "id": "3:224791957047376311",
+          "name": "content"
+        },
+        {
+          "id": "4:5249322568226362210",
+          "name": "time"
+        },
+        {
+          "id": "6:2539952256762843457",
+          "name": "enabled"
+        },
+        {
+          "id": "7:6840658423994047170",
+          "name": "repeatable"
+        },
+        {
+          "id": "8:4723908619486789543",
+          "name": "weekDays"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:6841201376968239941",
+      "lastPropertyId": "4:9207471153624114055",
+      "name": "AlarmInstance",
+      "properties": [
+        {
+          "id": "1:5840118571819908706",
+          "name": "instanceId"
+        },
+        {
+          "id": "2:3685311233650349235",
+          "name": "weekDay"
+        },
+        {
+          "id": "3:898186332392502438",
+          "indexId": "1:3072591551759249788",
+          "name": "alarmId"
+        },
+        {
+          "id": "4:9207471153624114055",
+          "name": "time"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:6841201376968239941",
+  "lastIndexId": "1:3072591551759249788",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    3354191341676111104
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}
