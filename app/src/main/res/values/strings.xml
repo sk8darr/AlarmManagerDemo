@@ -1,13 +1,19 @@
 <resources>
+    <!-- Common -->
     <string name="app_name">AlarmManagerDemo</string>
+
+    <!-- Alarms -->
     <string name="test_content">Esto es una alarma</string>
     <string name="def_hour">12:00 a.m.</string>
     <string name="save">Guardar</string>
     <string name="repeat">Repetir</string>
     <string name="delete">Eliminar</string>
     <string name="remainder">Recordatorio</string>
+    <string name="snooze">Posponer</string>
+    <string name="cancel">Cancelar</string>
 
 
+    <!-- Def Strings -->
     <string name="notification_channel">notification_channel</string>
     <string name="channel_name">MyEComment</string>
     <string name="channel_description">Notifications for MyEComment</string>

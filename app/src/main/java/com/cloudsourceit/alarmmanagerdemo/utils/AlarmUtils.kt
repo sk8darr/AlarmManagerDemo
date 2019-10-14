@@ -6,27 +6,21 @@ import android.content.Context
 import android.content.Intent
 import androidx.annotation.IntRange
 import androidx.appcompat.app.AppCompatActivity
+import com.cloudsourceit.alarmmanagerdemo.KEY_INSTANCE_ID
 import com.cloudsourceit.alarmmanagerdemo.ObjectBox
 import com.cloudsourceit.alarmmanagerdemo.model.Alarm
 import com.cloudsourceit.alarmmanagerdemo.model.AlarmInstance
 import com.cloudsourceit.alarmmanagerdemo.model.AlarmInstance_
 import com.cloudsourceit.alarmmanagerdemo.model.Alarm_
 import com.cloudsourceit.alarmmanagerdemo.service.AlarmServiceReceiver
-import java.lang.Exception
-import java.time.DayOfWeek
-import java.time.temporal.TemporalAdjusters
 import java.util.*
-import kotlin.collections.ArrayList
 
-const val KEY_ALARM_ID = "alarm_id"
-private const val REQUEST_CODE = 1002
 private val boxAlarm = ObjectBox.boxStore.boxFor(Alarm::class.java)
 private val boxAlarmInstance = ObjectBox.boxStore.boxFor(AlarmInstance::class.java)
 
-
 fun startNextAlarm(context: Context){
     val now = Calendar.getInstance()
-    val instances = boxAlarmInstance.query().order(AlarmInstance_.time).build().find()
+    val instances = boxAlarmInstance.query().order(AlarmInstance_.time).notEqual(AlarmInstance_.status, STATUS_FIRED).build().find()
     for(instance in instances){
         if(now.timeInMillis < instance.time){
             setAlarmAtTime(context, instance)
@@ -36,10 +30,17 @@ fun startNextAlarm(context: Context){
 }
 
 fun setAlarmAtTime(context: Context, alarmInstance: AlarmInstance){
+
     val alarmService = context.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
-    cancelAlarm(context, alarmService, REQUEST_CODE)
-    val intent = Intent(context, AlarmServiceReceiver::class.java).putExtra(AlarmServiceReceiver.KEY_ALARM, alarmInstance.alarm.targetId)
-    val pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, 0)
+
+    //Set a request code per instance. Using the instanceId
+    val requestCode = alarmInstance.instanceId.toInt()
+
+    //Cancel Alarm by id to prevent fire the same alarm twice
+    cancelAlarm(context, alarmService, requestCode)
+
+    val intent = Intent(context, AlarmServiceReceiver::class.java).putExtra(KEY_INSTANCE_ID, alarmInstance.instanceId)
+    val pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0)
     alarmService.setExactAndAllowWhileIdle(
         AlarmManager.RTC_WAKEUP,
         alarmInstance.time,
@@ -77,10 +78,6 @@ fun getAllAlarms(): MutableList<Alarm>{
     return boxAlarm.query().build().find()
 }
 
-fun getAllInstances(alarmId: Long): MutableList<AlarmInstance>{
-    return boxAlarmInstance.query().equal(AlarmInstance_.alarmId, alarmId).build().find()
-}
-
 fun getAlarmById(id: Long): Alarm?{
     return boxAlarm.query().equal(Alarm_.id, id).build().findFirst()
 }
@@ -91,7 +88,7 @@ fun saveAlarmAndInstances(alarm: Alarm, alarmInstanceList: ArrayList<AlarmInstan
 }
 
 fun updateInstance(instance: AlarmInstance){
-    calculateNextDate(instance.time.toCalendar(), instance.weekDay)
+    instance.time = calculateNextDate(instance.time.toCalendar(), instance.weekDay).timeInMillis
     boxAlarmInstance.put(instance)
 }
 
